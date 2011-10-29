@@ -46,8 +46,8 @@
 		    (item setTag: kPendingMoveTag)
 		    (@statusMenu insertItem: item atIndex: insertionIndex)
 		    (set insertionIndex (+ insertionIndex 1))
-		    (NSThread sleepForTimeInterval: 1)
-		    (growl "Move pending" "Your move with #{(head (tail game))}" (head game))))
+		    (growl "Move pending" "Your move with #{(head (tail game))}" (head game))
+		    (NSThread sleepForTimeInterval: 1)))
 	    (else
 		(set item ((NSMenuItem alloc) initWithTitle: "No Pending Moves" action: nil keyEquivalent: ""))
 		(item setTag: kPendingMoveTag)

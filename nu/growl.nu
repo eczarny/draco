@@ -1,6 +1,8 @@
 (load "Growl")
 (load "ZeroKit")
 
+(global kNotificationName "Draco")
+
 (class DracoGrowlDelegate is NSObject
     (ivar (id) registrationDictionary)
 
@@ -8,8 +10,8 @@
         (unless @registrationDictionary
             (set @registrationDictionary
                 (NSMutableDictionary dictionaryWithList:
-                    (list "AllNotifications" (NSArray arrayWithObject: "Draco")
-                        "DefaultNotifications" (NSArray arrayWithObject: 0)))))
+                    (list "AllNotifications"     (NSArray arrayWithObject: kNotificationName)
+                          "DefaultNotifications" (NSArray arrayWithObject: 0)))))
         @registrationDictionary)
 
     (- (id) applicationNameForGrowl is "Draco")
@@ -27,7 +29,7 @@
 (function growl (title message clickContext)
     (GrowlApplicationBridge notifyWithTitle: title
                                 description: message
-                           notificationName: "Draco"
+                           notificationName: kNotificationName
                                    iconData: nil
                                    priority: 0
                                    isSticky: NO

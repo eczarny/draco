@@ -4,15 +4,6 @@
 (load "menu")
 (load "growl")
 
-;; (class DracoWindowController is NSWindowController
-;;     (- (id) init is
-;;         (self initWithWindowNibName: "Draco")
-;;         ((self window) makeKeyAndOrderFront: self)
-;;         self)
-;; 
-;;     (- (void) refresh: (id) sender is
-;;         (growl "Refresing DGS status...")))
-
 (global NSVariableStatusItemLength -1)
 
 (global kRefreshInterval 5)
@@ -55,7 +46,7 @@
 		    (item setTag: kPendingMoveTag)
 		    (@statusMenu insertItem: item atIndex: insertionIndex)
 		    (set insertionIndex (+ insertionIndex 1))
-		    (growl "Your move with #{(head (tail game))}")))
+		    (growl "Your move with #{(head (tail game))}" (head game))))
 	    (else
 		(set item ((NSMenuItem alloc) initWithTitle: "No Pending Moves" action: nil keyEquivalent: ""))
 		(item setTag: kPendingMoveTag)

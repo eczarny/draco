@@ -1,7 +1,7 @@
 (load "Growl")
 (load "ZeroKit")
 
-(class MyGrowlDelegate is NSObject
+(class DracoGrowlDelegate is NSObject
     (ivar (id) registrationDictionary)
 
     (- (id) registrationDictionaryForGrowl is
@@ -27,13 +27,13 @@
     (- (void) growlNotificationTimedOut: (id) clickContext is
         (puts "Growl: notification '#{clickContext}' timed out.")))
 
-(GrowlApplicationBridge setGrowlDelegate: (set $growlDelegate ((MyGrowlDelegate alloc) init)))
+(GrowlApplicationBridge setGrowlDelegate: (set $growlDelegate ((DracoGrowlDelegate alloc) init)))
 
-(function growl (message)
+(function growl (message clickContext)
     (GrowlApplicationBridge notifyWithTitle: "Draco"
                                 description: (message stringValue)
                            notificationName: "Draco"
                                    iconData: nil
                                    priority: 0
                                    isSticky: NO
-                               clickContext: (message stringValue)))
+                               clickContext: clickContext))

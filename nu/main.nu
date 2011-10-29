@@ -50,14 +50,18 @@
         (set gamesAwaitingMoves (self gamesAwaitingMovesFromData: data))
         (if (> (gamesAwaitingMoves count) 0)
             (set insertionIndex kInsertionIndex)
+	    (set numberOfPendingMoves (gamesAwaitingMoves count))
             (gamesAwaitingMoves each:
                 (do (game)
 		    (set item ((NSMenuItem alloc) initWithTitle: "#{(head (tail game))} is waiting" action: nil keyEquivalent: ""))
 		    (item setTag: kPendingMoveTag)
 		    (@statusMenu insertItem: item atIndex: insertionIndex)
-		    (set insertionIndex (+ insertionIndex 1))
-		    (growl "Move pending" "Your move with #{(head (tail game))}" (head game))
-		    (NSThread sleepForTimeInterval: 0.25)))
+		    (set insertionIndex (+ insertionIndex 1))))
+	    (growl "Moves pending"
+		   (if (> numberOfPendingMoves 1)
+		       ("#{numberOfPendingMoves} games requiring your attention.")
+		       (else
+			   ("1 game requires your attention."))))
 	    (else
 		(set item ((NSMenuItem alloc) initWithTitle: "No Pending Moves" action: nil keyEquivalent: ""))
 		(item setTag: kPendingMoveTag)

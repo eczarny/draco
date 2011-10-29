@@ -21,16 +21,16 @@
                                     inBundle: (ZeroKitUtilities applicationBundle)) TIFFRepresentation))
 
     (- (void) growlNotificationWasClicked: (id)clickContext is
-        (set gameURL (NSURL URLWithString: "#{kDGSHostName}/game.php?gid=#{clickContext}"))
-        ((NSWorkspace sharedWorkspace) openURL: gameURL)))
+        (set statusURL (NSURL URLWithString: "#{kDGSHostName}/status.php"))
+        ((NSWorkspace sharedWorkspace) openURL: statusURL)))
 
 (GrowlApplicationBridge setGrowlDelegate: (set $growlDelegate ((DracoGrowlDelegate alloc) init)))
 
-(function growl (title message clickContext)
+(function growl (title message)
     (GrowlApplicationBridge notifyWithTitle: title
                                 description: message
                            notificationName: kNotificationName
                                    iconData: nil
                                    priority: 0
                                    isSticky: NO
-                               clickContext: clickContext))
+                               clickContext: message))

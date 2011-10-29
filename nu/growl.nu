@@ -18,20 +18,15 @@
         ((ZeroKitUtilities imageFromResource: "Draco"
                                     inBundle: (ZeroKitUtilities applicationBundle)) TIFFRepresentation))
 
-    (- (void) growlIsReady is (puts "Growl: ready"))
-
     (- (void) growlNotificationWasClicked: (id) clickContext is
         (set gameURL (NSURL URLWithString: "http://www.dragongoserver.net/game.php?gid=#{clickContext}"))
-        ((NSWorkspace sharedWorkspace) openURL: gameURL))
-
-    (- (void) growlNotificationTimedOut: (id) clickContext is
-        (puts "Growl: notification '#{clickContext}' timed out.")))
+        ((NSWorkspace sharedWorkspace) openURL: gameURL)))
 
 (GrowlApplicationBridge setGrowlDelegate: (set $growlDelegate ((DracoGrowlDelegate alloc) init)))
 
-(function growl (message clickContext)
-    (GrowlApplicationBridge notifyWithTitle: "Draco"
-                                description: (message stringValue)
+(function growl (title message clickContext)
+    (GrowlApplicationBridge notifyWithTitle: title
+                                description: message
                            notificationName: "Draco"
                                    iconData: nil
                                    priority: 0

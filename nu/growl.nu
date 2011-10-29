@@ -21,8 +21,8 @@
     (- (void) growlIsReady is (puts "Growl: ready"))
 
     (- (void) growlNotificationWasClicked: (id) clickContext is
-        (set statusURL (NSURL URLWithString: "http://www.dragongoserver.net/status.php"))
-        ((NSWorkspace sharedWorkspace) openURL: statusURL))
+        (set gameURL (NSURL URLWithString: "http://www.dragongoserver.net/game.php?gid=#{clickContext}"))
+        ((NSWorkspace sharedWorkspace) openURL: gameURL))
 
     (- (void) growlNotificationTimedOut: (id) clickContext is
         (puts "Growl: notification '#{clickContext}' timed out.")))

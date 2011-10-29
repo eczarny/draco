@@ -11,7 +11,7 @@
             (set @registrationDictionary
                 (NSMutableDictionary dictionaryWithList:
                     (list "AllNotifications"     (NSArray arrayWithObject: kNotificationName)
-                          "DefaultNotifications" (NSArray arrayWithObject: 0)))))
+                          "DefaultNotifications" (NSArray arrayWithObject: kNotificationName)))))
         @registrationDictionary)
 
     (- (id) applicationNameForGrowl is "Draco")
@@ -20,8 +20,8 @@
         ((ZeroKitUtilities imageFromResource: "Draco"
                                     inBundle: (ZeroKitUtilities applicationBundle)) TIFFRepresentation))
 
-    (- (void) growlNotificationWasClicked: (id) clickContext is
-        (set gameURL (NSURL URLWithString: "http://www.dragongoserver.net/game.php?gid=#{clickContext}"))
+    (- (void) growlNotificationWasClicked: (id)clickContext is
+        (set gameURL (NSURL URLWithString: "#{kDGSHostName}/game.php?gid=#{clickContext}"))
         ((NSWorkspace sharedWorkspace) openURL: gameURL)))
 
 (GrowlApplicationBridge setGrowlDelegate: (set $growlDelegate ((DracoGrowlDelegate alloc) init)))

@@ -7,7 +7,8 @@
 (global NSVariableStatusItemLength -1)
 
 (global kRefreshInterval 5)
-(global kInsertionIndex  2)
+(global kDGSHostName "http://www.dragongoserver.net")
+(global kInsertionIndex 3)
 (global kPendingMoveTag 42)
 
 (class ApplicationDelegate is NSObject
@@ -15,6 +16,7 @@
         (set @statusMenu (create-menu
             '(menu "Draco"
                 ("Refresh" action: "refresh:")
+		("Active Games" action: "openActiveGames:")
                 (separator)
 		("No Pending Moves" tag: kPendingMoveTag)
 		(separator)
@@ -27,13 +29,21 @@
         (statusItem setMenu: @statusMenu))
 
     (- (void) applicationDidFinishLaunching: (id)sender is
-        (set @timer (NSTimer scheduledTimerWithTimeInterval: (* 60 kRefreshInterval) target: self selector: "refresh:" userInfo: nil repeats: YES))
+        (set @timer (NSTimer scheduledTimerWithTimeInterval: (* 60 kRefreshInterval)
+						     target: self
+						   selector: "refresh:"
+						   userInfo: nil
+						    repeats: YES))
 	(@timer fire))
 
-    (- (void) refresh: (id) sender is
+    (- (void) refresh: (id)sender is
         (set connectionManager (ZeroKitURLConnectionManager sharedManager))
-        (set request ((NSURLRequest alloc) initWithURL: (NSURL URLWithString: "http://www.dragongoserver.net/quick_status.php")))
+        (set request ((NSURLRequest alloc) initWithURL: (NSURL URLWithString: "#{kDGSHostName}/quick_status.php")))
         (connectionManager spawnConnectionWithURLRequest: request delegate: self))
+
+    (- (void) openActiveGames: (id)sender is
+        (set statusURL (NSURL URLWithString: "#{kDGSHostName}/status.php"))
+        ((NSWorkspace sharedWorkspace) openURL: statusURL))
 
     (- (void) request: (id)request didReceiveData: (id)data is
         (self clearGamesPendingMoves)
@@ -42,12 +52,12 @@
             (set insertionIndex kInsertionIndex)
             (gamesAwaitingMoves each:
                 (do (game)
-		    (set item ((NSMenuItem alloc) initWithTitle: "Game with #{(head (tail game))}" action: nil keyEquivalent: ""))
+		    (set item ((NSMenuItem alloc) initWithTitle: "#{(head (tail game))} is waiting" action: nil keyEquivalent: ""))
 		    (item setTag: kPendingMoveTag)
 		    (@statusMenu insertItem: item atIndex: insertionIndex)
 		    (set insertionIndex (+ insertionIndex 1))
 		    (growl "Move pending" "Your move with #{(head (tail game))}" (head game))
-		    (NSThread sleepForTimeInterval: 1)))
+		    (NSThread sleepForTimeInterval: 0.25)))
 	    (else
 		(set item ((NSMenuItem alloc) initWithTitle: "No Pending Moves" action: nil keyEquivalent: ""))
 		(item setTag: kPendingMoveTag)

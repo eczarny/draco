@@ -28,7 +28,7 @@
         (set @statusMenu (create-menu
             '(menu "Draco"
                 ("Refresh" action: "refresh:")
-		("Active Games" action: "openActiveGames:")
+		("Status" action: "openStatus:")
                 (separator)
 		("No Pending Moves" tag: kPendingMoveTag)
 		(separator)
@@ -53,7 +53,7 @@
         (set request ((NSURLRequest alloc) initWithURL: (NSURL URLWithString: "#{kDGSHostName}/quick_status.php")))
         (connectionManager spawnConnectionWithURLRequest: request delegate: self))
 
-    (- (void) openActiveGames: (id)sender is
+    (- (void) openStatus: (id)sender is
         (set statusURL (NSURL URLWithString: "#{kDGSHostName}/status.php"))
         ((NSWorkspace sharedWorkspace) openURL: statusURL))
 

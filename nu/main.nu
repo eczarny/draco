@@ -59,26 +59,13 @@
 
     (- (void) request: (id)request didReceiveData: (id)data is
         (self clearGamesPendingMoves)
-        (set gamesAwaitingMoves (self gamesAwaitingMovesFromData: data))
-        (if (> (gamesAwaitingMoves count) 0)
-            (set insertionIndex kInsertionIndex)
-	    (set numberOfPendingMoves (gamesAwaitingMoves count))
-            (gamesAwaitingMoves each:
-                (do (game)
-		    (set item ((NSMenuItem alloc) initWithTitle: "#{(game opponent)} is waiting" action: "openGame:" keyEquivalent: ""))
-		    (item setTarget: game)
-		    (item setTag: kPendingMoveTag)
-		    (@statusMenu insertItem: item atIndex: insertionIndex)
-		    (set insertionIndex (+ insertionIndex 1))))
-	    (growl "Moves pending"
-		   (if (> numberOfPendingMoves 1)
-		       ("#{numberOfPendingMoves} games requiring your attention.")
-		       (else
-			   ("1 game requires your attention."))))
-	    (else
-		(set item ((NSMenuItem alloc) initWithTitle: "No Pending Moves" action: nil keyEquivalent: ""))
-		(item setTag: kPendingMoveTag)
-		(@statusMenu insertItem: item atIndex: kInsertionIndex))))
+	(try
+	    (set gamesAwaitingMoves (self gamesAwaitingMovesFromData: data))
+	    (self processGamesAwaitingMoves: gamesAwaitingMoves)
+	    (catch (exception)
+		(set item (create-menu-item '("Not Logged In" tag: kPendingMoveTag)))
+		(@statusMenu insertItem: item atIndex: kInsertionIndex)
+		(growl "Draco encountered a problem" exception))))
 
     (- (void) clearGamesPendingMoves is
         (set items ((@statusMenu itemArray) list))
@@ -87,15 +74,36 @@
                 (if (== (item tag) kPendingMoveTag)
 		    (@statusMenu removeItem: item)))))
 
+    (- (void) processGamesAwaitingMoves: (id)gamesAwaitingMoves is
+        (if (> (gamesAwaitingMoves count) 0)
+            (set insertionIndex kInsertionIndex)
+	    (set numberOfPendingMoves (gamesAwaitingMoves count))
+            (gamesAwaitingMoves each:
+                (do (game)
+		    (set item (create-menu-item '("#{(game opponent)} is waiting" target: game action: "openGame:" tag: kPendingMoveTag)))
+		    (@statusMenu insertItem: item atIndex: insertionIndex)
+		    (set insertionIndex (+ insertionIndex 1))))
+	    (growl "Moves pending"
+		   (if (> numberOfPendingMoves 1)
+		       ("#{numberOfPendingMoves} games requiring your attention.")
+		       (else
+			   ("1 game requires your attention."))))
+	    (else
+		(set item (create-menu-item '("No Pending Moves" tag: kPendingMoveTag)))
+		(@statusMenu insertItem: item atIndex: kInsertionIndex))))
+
     (- (id) gamesAwaitingMovesFromData: (id)data is
         (set response ((NSString alloc) initWithBytes: (data bytes) length: (data length) encoding: NSUTF8StringEncoding))
-        (set lines ((response componentsSeparatedByString: "\n") list))
+        (set lines ((response lines) list))
 	(set gamesAwaitingMoves (NSMutableArray array))
         (lines each:
             (do (line)
 	        (set game ((line componentsSeparatedByString: ", ") list))
 		(if (== (head game) "'G'")
-		    (gamesAwaitingMoves addObject: (((DracoGame alloc) initWithGame: (tail game)) retain)))))
+		    (gamesAwaitingMoves addObject: (((DracoGame alloc) initWithGame: (tail game)) retain))
+		    (else
+			(if (not (line contains: "empty lists"))
+			    (throw "Please log in to check for pending moves."))))))
         gamesAwaitingMoves))
 
 ((NSApplication sharedApplication) setDelegate: (set delegate ((DracoApplicationDelegate alloc) init)))

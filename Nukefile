@@ -7,7 +7,8 @@
 
 (set @nu_files (filelist "^nu/.*nu$"))
 (set @xib_files (filelist "^resources/.*\.xib$"))
-(set @icon_files (array "resources/Draco.icns"))
+(set @icon_files (filelist "^resources/.*(\.icns|\.tiff)$"))
+(set @resources (filelist "^resources/.*\.plist$"))
 
 (set @info (NSDictionary dictionaryWithList:
     (list

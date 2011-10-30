@@ -26,20 +26,23 @@
                 (rest each:
                     (do (item)
                         (menu addItem: (create-menu item)))))
-	    (set item ((NSMenuItem alloc) initWithTitle: (eval (head (tail menu-description))) action: nil keyEquivalent: ""))
+	    (set item (create-menu-item (tail menu-description)))
             (item setSubmenu: menu)
             menu)
         ((eq (head menu-description) 'separator)
             (NSMenuItem separatorItem))
         (t
-            (let ((item ((NSMenuItem alloc) initWithTitle: (eval (head menu-description)) action: nil keyEquivalent: ""))
-                  (rest (tail menu-description)))
-                (if rest
-                    (rest eachPair:
-                        (do (key value)
-                            (cond ((eq key 'target:)        (item setTarget: (eval value)))
-                                  ((eq key 'action:)        (item setAction: (eval value)))
-                                  ((eq key 'keyEquivalent:) (item setKeyEquivalent: (eval value)))
-                                  ((eq key 'keyModifier:)   (item setKeyEquivalentModifierMask: (eval value)))
-                                  ((eq key 'tag:)           (item setTag: (eval value)))))))
-                item))))
+	    (create-menu-item menu-description))))
+
+(function create-menu-item (menu-item-description)
+    (let ((item ((NSMenuItem alloc) initWithTitle: (eval (head menu-item-description)) action: nil keyEquivalent: ""))
+        (rest (tail menu-item-description)))
+	(if rest
+	    (rest eachPair:
+	        (do (key value)
+		    (cond ((eq key 'target:)        (item setTarget: (eval value)))
+		          ((eq key 'action:)        (item setAction: (eval value)))
+		          ((eq key 'keyEquivalent:) (item setKeyEquivalent: (eval value)))
+			  ((eq key 'keyModifier:)   (item setKeyEquivalentModifierMask: (eval value)))
+			  ((eq key 'tag:)           (item setTag: (eval value)))))))
+	item))

@@ -11,7 +11,19 @@
 (global kInsertionIndex 3)
 (global kPendingMoveTag 42)
 
-(class ApplicationDelegate is NSObject
+(class DracoGame is NSObject
+    (- (id) initWithGame: (id)game is
+        (super init)
+        (set @game game)
+        self)
+
+    (- (id) opponent is (head (tail @game)))
+
+    (- (void) openGame: (id)sender is
+        (set statusURL (NSURL URLWithString: "#{kDGSHostName}/game.php?gid=#{(head @game)}"))
+        ((NSWorkspace sharedWorkspace) openURL: statusURL)))
+
+(class DracoApplicationDelegate is NSObject
     (- (void) applicationWillFinishLaunching: (id)sender is
         (set @statusMenu (create-menu
             '(menu "Draco"
@@ -53,7 +65,8 @@
 	    (set numberOfPendingMoves (gamesAwaitingMoves count))
             (gamesAwaitingMoves each:
                 (do (game)
-		    (set item ((NSMenuItem alloc) initWithTitle: "#{(head (tail game))} is waiting" action: nil keyEquivalent: ""))
+		    (set item ((NSMenuItem alloc) initWithTitle: "#{(game opponent)} is waiting" action: "openGame:" keyEquivalent: ""))
+		    (item setTarget: game)
 		    (item setTag: kPendingMoveTag)
 		    (@statusMenu insertItem: item atIndex: insertionIndex)
 		    (set insertionIndex (+ insertionIndex 1))))
@@ -82,9 +95,9 @@
             (do (line)
 	        (set game ((line componentsSeparatedByString: ", ") list))
 		(if (== (head game) "'G'")
-		    (gamesAwaitingMoves addObject: (tail game)))))
+		    (gamesAwaitingMoves addObject: (((DracoGame alloc) initWithGame: (tail game)) retain)))))
         gamesAwaitingMoves))
 
-((NSApplication sharedApplication) setDelegate: (set delegate ((ApplicationDelegate alloc) init)))
+((NSApplication sharedApplication) setDelegate: (set delegate ((DracoApplicationDelegate alloc) init)))
 
 (NSApplicationMain 0 nil)

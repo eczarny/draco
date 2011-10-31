@@ -80,7 +80,7 @@
 	    (set numberOfPendingMoves (gamesAwaitingMoves count))
             (gamesAwaitingMoves each:
                 (do (game)
-		    (set item (create-menu-item '("#{(game opponent)} is waiting" target: game action: "openGame:" tag: kPendingMoveTag)))
+		    (set item (create-menu-item `(,("#{(game opponent)} is waiting") target: ,(game) action: "openGame:" tag: kPendingMoveTag)))
 		    (@statusMenu insertItem: item atIndex: insertionIndex)
 		    (set insertionIndex (+ insertionIndex 1))))
 	    (growl "Moves pending"
@@ -104,7 +104,7 @@
 		    (else
 			(if (not (line contains: "empty lists"))
 			    (throw "Please log in to check for pending moves."))))))
-        gamesAwaitingMoves))
+        (gamesAwaitingMoves list)))
 
 ((NSApplication sharedApplication) setDelegate: (set delegate ((DracoApplicationDelegate alloc) init)))
 

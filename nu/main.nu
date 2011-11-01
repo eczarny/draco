@@ -48,6 +48,11 @@
                            selector: "refresh:"
                            userInfo: nil
                             repeats: YES))
+        (set notificationCenter (NSNotificationCenter defaultCenter))
+        (notificationCenter addObserver: self
+                               selector: "menuDidSendAction:"
+                                   name: "NSMenuDidSendActionNotification"
+                                 object: nil)
         (set @loginController ((DracoLoginWindowController alloc) init))
         (@timer fire))
 
@@ -114,7 +119,10 @@
             (else
             (if (not (line contains: "empty lists"))
                 (throw "Please log in to check for pending moves."))))))
-        (gamesAwaitingMoves list)))
+        (gamesAwaitingMoves list))
+
+    (- (void) menuDidSendAction: (id)notification is
+        ((NSApplication sharedApplication) activateIgnoringOtherApps: YES)))
 
 ((NSApplication sharedApplication) setDelegate: (set delegate ((DracoApplicationDelegate alloc) init)))
 

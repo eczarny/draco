@@ -4,6 +4,7 @@
 (load "menu")
 (load "growl")
 (load "preferences")
+(load "login")
 
 (global NSVariableStatusItemLength -1)
 
@@ -47,7 +48,8 @@
                            selector: "refresh:"
                            userInfo: nil
                             repeats: YES))
-    (@timer fire))
+        (set @loginController ((DracoLoginWindowController alloc) init))
+        (@timer fire))
 
     (- (void) refresh: (id)sender is
         (set connectionManager (ZeroKitURLConnectionManager sharedManager))
@@ -61,6 +63,9 @@
     (- (void) togglePreferences: (id)sender is
         ((ZeroKitPreferencesWindowController sharedController) togglePreferencesWindow: sender))
 
+    (- (void) displayLogin: (id)sender is
+        ((@loginController window) makeKeyAndOrderFront: self))
+
     (- (void) request: (id)request didReceiveData: (id)data is
         (self clearGamesPendingMoves)
     (try
@@ -69,6 +74,7 @@
         (catch (exception)
         (set item (create-menu-item '("Not Logged In" tag: kPendingMoveTag)))
         (@statusMenu insertItem: item atIndex: kInsertionIndex)
+        (self displayLogin: self)
         (growl "Draco encountered a problem" exception))))
 
     (- (void) clearGamesPendingMoves is

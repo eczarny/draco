@@ -1,10 +1,10 @@
 (load "ZeroKit")
 
-(function cocoa-checkbox (frame)
-    (((NSButton alloc) initWithFrame: frame) set: (buttonType: 3)))
-
 (function cocoa-label (frame)
     (((NSTextField alloc) initWithFrame: frame) set: (bezeled: 0 editable: 0 alignment: NSRightTextAlignment drawsBackground: 0)))
+
+(function cocoa-checkbox (frame)
+    (((NSButton alloc) initWithFrame: frame) set: (buttonType: 3)))
 
 (class DracoGeneralPreferencePane is NSObject
     (- (void) preferencePaneDidLoad is

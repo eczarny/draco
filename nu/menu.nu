@@ -30,7 +30,7 @@
         ((eq (head menu-description) 'separator)
             (NSMenuItem separatorItem))
         (t
-        (create-menu-item menu-description))))
+            (create-menu-item menu-description))))
 
 (function create-menu-item (menu-item-description)
     (let ((item ((NSMenuItem alloc) initWithTitle: (eval (head menu-item-description)) action: nil keyEquivalent: ""))
@@ -41,6 +41,6 @@
             (cond ((eq key 'target:)        (item setTarget: (eval value)))
                   ((eq key 'action:)        (item setAction: (eval value)))
                   ((eq key 'keyEquivalent:) (item setKeyEquivalent: (eval value)))
-              ((eq key 'keyModifier:)   (item setKeyEquivalentModifierMask: (eval value)))
-              ((eq key 'tag:)           (item setTag: (eval value)))))))
+                  ((eq key 'keyModifier:)   (item setKeyEquivalentModifierMask: (eval value)))
+                  ((eq key 'tag:)           (item setTag: (eval value)))))))
     item))

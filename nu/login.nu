@@ -19,7 +19,7 @@
                                             styleMask: (+ NSTitledWindowMask NSClosableWindowMask NSMiniaturizableWindowMask)
                                               backing: NSBackingStoreBuffered
                                                 defer: 0))
-            (w set: (title:"Dragon Go Server"))
+            (w set: (title: "Dragon Go Server" releasedWhenClosed: NO))
             (let (view ((NSView alloc) initWithFrame: (w frame)))
                 (let (label (cocoa-label '(37 91 86 17)))
                     (label setStringValue: "Username:")
@@ -29,13 +29,14 @@
                     (view addSubview: textField))
                 (let (label (cocoa-label '(37 59 86 17)))
                     (label setStringValue: "Password:")
-                    (label setAction: "logIn:")
                     (view addSubview: label))
                 (let (textField (cocoa-secure-text-field '(128 56 150 22)))
+                    (textField setTarget: self)
+                    (textField setAction: "logIn:")
                     (set @passwordTextField textField)
                     (view addSubview: textField))
                 (let (button (cocoa-button '(202 12 82 32)))
-                    (button set: (title: "Log In" action: "logIn:"))
+                    (button set: (title: "Log In" target: self action: "logIn:"))
                     (view addSubview: button))
                 (w setContentView: view))
                 (w center)
@@ -43,4 +44,14 @@
          self)
 
     (- (void) logIn: (id)sender is
-        (puts "#{(usernameTextField stringValue)} is logging in with password #{(passwordTextField stringValue)}")))
+        (set connectionManager (ZeroKitURLConnectionManager sharedManager))
+        (set request ((NSMutableURLRequest alloc) initWithURL: (NSURL URLWithString: "#{kDGSHostName}/login.php")))
+        (set body "userid=#{(@usernameTextField stringValue)}&passwd=#{(@passwordTextField stringValue)}")
+        (request setHTTPMethod: "POST")
+        (request setHTTPBody: (body dataUsingEncoding: NSUTF8StringEncoding))
+        (connectionManager spawnConnectionWithURLRequest: request delegate: self)
+        (@window performClose: self))
+
+    (- (void) request: (id)request didReceiveData: (id)data is
+        ((NSNotificationCenter defaultCenter) postNotificationName: "DracoUserDidLogInNotification"
+                                                            object: self)))

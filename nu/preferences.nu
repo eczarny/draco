@@ -11,10 +11,10 @@
         (set @applicationBundle (ZeroKitUtilities applicationBundle))
         (set loginAtLaunchEnabledState 0)
         (let (checkbox (cocoa-checkbox '(182 19 322 18)))
-        (checkbox set: (title: "Launch Draco at login" target: self action: "toggleLoginItem:"))
+            (checkbox set: (title: "Launch Draco at login" target: self action: "toggleLoginItem:"))
             (set @launchAtLogin checkbox))
-        (if ((ZeroKitUtilities isLoginItemEnabledForBundle: @applicationBundle))
-            (set loginAtLaunchEnabledState 1))
+            (if ((ZeroKitUtilities isLoginItemEnabledForBundle: @applicationBundle))
+                (set loginAtLaunchEnabledState 1))
         (@launchAtLogin setState: loginAtLaunchEnabledState))
 
     (- (id) name is "General")

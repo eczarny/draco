@@ -19,7 +19,7 @@
 
 (function create-menu (menu-description)
     (cond
-        ((eq (head menu-description) 'menu)
+        ((== (head menu-description) 'menu)
             (set menu ((NSMenu alloc) initWithTitle: (eval (head (tail menu-description)))))
             (set rest (tail (tail menu-description)))
             (if rest
@@ -27,7 +27,7 @@
                     (do (item)
                         (menu addItem: (create-menu item)))))
             menu)
-        ((eq (head menu-description) 'separator)
+        ((== (head menu-description) 'separator)
             (NSMenuItem separatorItem))
         (t
             (create-menu-item menu-description))))
@@ -38,9 +38,9 @@
     (if rest
         (rest eachPair:
             (do (key value)
-            (cond ((eq key 'target:)        (item setTarget: (eval value)))
-                  ((eq key 'action:)        (item setAction: (eval value)))
-                  ((eq key 'keyEquivalent:) (item setKeyEquivalent: (eval value)))
-                  ((eq key 'keyModifier:)   (item setKeyEquivalentModifierMask: (eval value)))
-                  ((eq key 'tag:)           (item setTag: (eval value)))))))
+            (cond ((== key 'target:)        (item setTarget: (eval value)))
+                  ((== key 'action:)        (item setAction: (eval value)))
+                  ((== key 'keyEquivalent:) (item setKeyEquivalent: (eval value)))
+                  ((== key 'keyModifier:)   (item setKeyEquivalentModifierMask: (eval value)))
+                  ((== key 'tag:)           (item setTag: (eval value)))))))
     item))

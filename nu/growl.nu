@@ -27,10 +27,11 @@
 (GrowlApplicationBridge setGrowlDelegate: (set $growlDelegate ((DracoGrowlDelegate alloc) init)))
 
 (function growl (title message)
-    (GrowlApplicationBridge notifyWithTitle: title
-                                description: message
-                           notificationName: kNotificationName
-                                   iconData: nil
-                                   priority: 0
-                                   isSticky: NO
-                               clickContext: message))
+    (if ((NSUserDefaults standardUserDefaults) boolForKey: "growlEnabled")
+        (GrowlApplicationBridge notifyWithTitle: title
+                                    description: message
+                               notificationName: kNotificationName
+                                       iconData: nil
+                                       priority: 0
+                                       isSticky: NO
+                                   clickContext: message)))

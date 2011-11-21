@@ -139,11 +139,14 @@
         (lines each:
             (do (line)
                 (set game ((line componentsSeparatedByString: ", ") list))
-                (if (== (head game) "'G'")
-                    (gamesAwaitingMoves addObject: (((DracoGame alloc) initWithGame: (tail game)) retain))
-                (else
-                    (if (not (line contains: "empty lists"))
-                        (throw "Please log in to check for pending moves."))))))
+                (cond
+                    ((== (head game) "'G'")
+                        (gamesAwaitingMoves addObject: (((DracoGame alloc) initWithGame: (tail game)) retain)))
+                    ((== (head game) "'M'")
+                        (growl "Messages waiting" "There are messages waiting for you."))
+                    (t
+                        (if (not (line contains: "empty lists"))
+                            (throw "Please log in to check for pending moves."))))))
         (gamesAwaitingMoves list))
 
     (- (void) menuDidSendAction: (id)notification is

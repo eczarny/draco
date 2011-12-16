@@ -16,7 +16,7 @@ If Nu is installed properly Draco should now be running.
 
 # License
 
-Copyright (c) 2011 Eric Czarny.
+Copyright (c) 2012 Eric Czarny.
 
 This software package should be accompanied by a LICENSE file, this file contains the license relevant to this distribution. If no LICENSE exists, please contact Eric Czarny <eczarny@gmail.com>.
 
